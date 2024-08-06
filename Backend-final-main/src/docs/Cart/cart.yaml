@@ -1,0 +1,313 @@
+openapi: 3.0.0
+info:
+  title: Carrito de Compras API
+  version: 1.0.0
+  description: API para la gestión de carritos de compras
+
+servers:
+  - url: http://localhost:8080/api/carts
+    description: Servidor local
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Cart:
+      type: object
+      properties:
+        stock:
+          type: integer
+          example: 5
+        total:
+          type: number
+          example: 100.50
+        country:
+          type: string
+          example: Argentina
+        state:
+          type: string
+          example: Buenos Aires
+        city:
+          type: string
+          example: La Plata
+        street:
+          type: string
+          example: Calle Falsa 123
+        postal_code:
+          type: integer
+          example: 1900
+        phone:
+          type: integer
+          example: 541122334455
+        cardBank:
+          type: integer
+          example: 1234567812345678
+        securityNumber:
+          type: integer
+          example: 123
+        expiredDate:
+          type: string
+          format: date
+          example: 2024-12-31
+        date:
+          type: string
+          format: date-time
+          example: 2024-07-22T14:00:00Z
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                example: 60c72b2f4f1a4c2a2c8e3e7c
+              productQuantity:
+                type: integer
+                example: 2
+              productPrice:
+                type: number
+                example: 50.25
+              productTotal:
+                type: number
+                example: 100.50
+        user:
+          type: string
+          example: 60c72b2f4f1a4c2a2c8e3e7d
+
+paths:
+  /{cid}:
+    get:
+      summary: Obtener carrito por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+      responses:
+        '200':
+          description: Carrito obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '500':
+          description: Error en la base de datos
+
+    put:
+      summary: Actualizar carrito con nuevos productos
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product:
+                        type: string
+                        example: 60c72b2f4f1a4c2a2c8e3e7c
+                      productQuantity:
+                        type: integer
+                        example: 2
+                      productPrice:
+                        type: number
+                        example: 50.25
+                      productTotal:
+                        type: number
+                        example: 100.50
+                userId:
+                  type: string
+                  example: 60c72b2f4f1a4c2a2c8e3e7d
+      responses:
+        '200':
+          description: Carrito actualizado correctamente
+        '500':
+          description: Error en la base de datos
+
+    delete:
+      summary: Limpiar carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 60c72b2f4f1a4c2a2c8e3e7d
+      responses:
+        '200':
+          description: Carrito vaciado completamente
+        '500':
+          description: Error en la base de datos
+
+  /{cid}/purchase:
+    get:
+      summary: Renderizar formulario de compra del carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+      responses:
+        '200':
+          description: Formulario de compra renderizado exitosamente
+        '500':
+          description: Error en la base de datos
+
+    post:
+      summary: Realizar compra del carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                  example: Argentina
+                state:
+                  type: string
+                  example: Buenos Aires
+                city:
+                  type: string
+                  example: La Plata
+                street:
+                  type: string
+                  example: Calle Falsa 123
+                postal_code:
+                  type: integer
+                  example: 1900
+                phone:
+                  type: integer
+                  example: 541122334455
+                cardBank:
+                  type: integer
+                  example: 1234567812345678
+                securityNumber:
+                  type: integer
+                  example: 123
+                expiredDate:
+                  type: string
+                  format: date
+                  example: 2024-12-31
+                userId:
+                  type: string
+                  example: 60c72b2f4f1a4c2a2c8e3e7d
+      responses:
+        '200':
+          description: Compra realizada exitosamente
+        '500':
+          description: Error en la base de datos
+
+  /{cid}/products/{pid}:
+    put:
+      summary: Actualizar cantidad de un producto en el carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  example: 3
+      responses:
+        '200':
+          description: Cantidad del producto actualizada correctamente
+        '500':
+          description: Error en la base de datos
+
+    delete:
+      summary: Borrar producto del carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 60c72b2f4f1a4c2a2c8e3e7d
+      responses:
+        '200':
+          description: Producto eliminado del carrito correctamente
+        '500':
+          description: Error en la base de datos

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeusers
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: kubeusers
+  template:
+    metadata:
+      labels:
+        app: kubeusers
+    spec:
+      containers:
+        - name: kubecontainer
+          image: gonza10/apptienda:1.0.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_URL
+              value: mongodb+srv://gonza:Coder2001@ecommerce.salixhx.mongodb.net/
+          imagePullPolicy: Always

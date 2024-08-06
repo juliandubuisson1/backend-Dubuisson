@@ -1,0 +1,13 @@
+[
+  {
+    "title": "PS4",
+    "brand": "Sony",
+    "description": "ps4",
+    "price": 750000,
+    "stock": 10,
+    "category": "tecnologia",
+    "image": "ps4.png",
+    "_id": "6600676ccf242ca23087c1f8",
+    "__v": 0
+  }
+]
